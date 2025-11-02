@@ -62,6 +62,7 @@ let MEMORY_BANK_DIR: string | null = null;
 // Initialize Memory Bank - create new document structure
 server.tool(
   'initialize_memory_bank',
+  'Creates a new Memory Bank structure for HomiQR project documentation. Generates comprehensive documentation templates including architecture diagrams, deployment guides, database schemas, security policies, testing strategies, and operational procedures. Essential for maintaining project knowledge across development, deployment, and operations teams.',
   {
     goal: z.string().min(10, 'Project goal must be at least 10 characters'),
     geminiApiKey: z.string().optional().describe('Gemini API key (optional)'),
@@ -309,8 +310,9 @@ Each document follows a standard lifecycle:
 // Update document
 server.tool(
   'update_document',
+  'Updates specific HomiQR project documentation including architecture diagrams, deployment guides, database schemas, security policies, testing strategies, and operational procedures. Supports all document types found in docs/ folder: architecture-diagram, deployment-guide, db-policies, monitoring-playbook, testing-strategy, and more.',
   {
-    documentType: z.enum(['projectbrief', 'productContext', 'systemPatterns', 'techContext', 'activeContext', 'progress']),
+    documentType: z.enum(['projectbrief', 'productContext', 'systemPatterns', 'techContext', 'activeContext', 'progress', 'architecture-diagram', 'deployment-guide', 'db-policies', 'monitoring-playbook', 'testing-strategy', 'ops-checklist', 'rollback-plan', 'security-headers']),
     content: z.string().optional(),
     regenerate: z.boolean().default(false)
   },
@@ -372,6 +374,7 @@ server.tool(
 // Query Memory Bank
 server.tool(
   'query_memory_bank',
+  'Searches across all HomiQR project documentation including architecture diagrams, deployment guides, database schemas, security policies, testing strategies, and operational procedures. Uses context-aware relevance ranking to find most relevant content from technical documentation, monitoring playbooks, and operational guides.',
   {
     query: z.string().min(5, 'Query must be at least 5 characters')
   },
@@ -561,6 +564,7 @@ function extractRelevantSnippet(text: string, queryTerms: string[], sectionTitle
 // Export Memory Bank
 server.tool(
   'export_memory_bank',
+  'Exports all HomiQR project documentation including architecture diagrams, deployment guides, database schemas, security policies, testing strategies, and operational procedures. Creates complete backup of structured knowledge base for easy sharing, backup, or migration of technical documentation and operational guides.',
   {
     format: z.enum(['json', 'folder']).default('folder').describe('Export format'),
     outputPath: z.string().optional()
@@ -612,10 +616,11 @@ server.tool(
 // Create Cursor Rules
 server.tool(
   'create_cursor_rules',
+  'Generates AI-powered cursor rules for Cursor IDE specifically for HomiQR smart door access system. Creates contextual development guidelines covering Flutter development, Supabase integration, WebRTC implementation, security policies, and deployment procedures tailored to the HomiQR project architecture.',
   {
     projectPurpose: z.string()
-      .min(10, 'Proje amacı en az 10 karakter olmalıdır')
-      .describe('Proje amacını detaylı bir şekilde açıklayan bir metin giriniz. Bu metin projenin temel hedeflerini ve kapsamını belirleyecektir.'),
+      .min(10, 'Project purpose must be at least 10 characters')
+      .describe('Detailed description of HomiQR project purpose including smart door access, QR code functionality, video intercom features, and multi-tenant architecture.'),
     location: z.string()
       .describe('Absolute path where cursor-rules will be created')
   },
@@ -770,11 +775,9 @@ export async function startServer(): Promise<void> {
   const transport = new StdioServerTransport();
   
   try {
-    console.log('Starting Memory Bank MCP server...');
-    await server.connect(transport);
-    console.log('Memory Bank MCP server successfully started!');
+      await server.connect(transport);
   } catch (error) {
     console.error('Error starting server:', error);
     process.exit(1);
   }
-} 
+}
