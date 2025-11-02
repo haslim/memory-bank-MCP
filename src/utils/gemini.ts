@@ -14,6 +14,33 @@ const DEFAULT_API_KEY = 'YOUR_DEFAULT_API_KEY';
 let apiKey = process.env.GEMINI_API_KEY;
 
 console.log('Checking for Gemini API key...');
+
+// Try to read .env file directly if environment variable is not set
+if (!apiKey) {
+  try {
+    const envPath = path.resolve(process.cwd(), '.env');
+    console.log(`Looking for .env file at: ${envPath}`);
+    
+    if (fs.existsSync(envPath)) {
+      const envContent = fs.readFileSync(envPath, 'utf-8');
+      console.log(`.env file content: ${envContent}`);
+      const lines = envContent.split('\n');
+      for (const line of lines) {
+        console.log(`Processing line: ${line}`);
+        if (line.startsWith('GEMINI_API_KEY=')) {
+          apiKey = line.substring('GEMINI_API_KEY='.length).trim();
+          console.log(`Found API key in .env file: ${apiKey}`);
+          break;
+        }
+      }
+    } else {
+      console.log('.env file does not exist');
+    }
+  } catch (err) {
+    console.error('Failed to read .env file:', err);
+  }
+}
+
 if (!apiKey) {
   console.error('GEMINI_API_KEY environment variable is not defined.');
   
@@ -29,6 +56,8 @@ if (!apiKey) {
   
   apiKey = DEFAULT_API_KEY;
   console.log('Using default API key.');
+} else {
+  console.log(`API key is set: ${apiKey.substring(0, 10)}...`);
 }
 
 if (apiKey === 'your_gemini_api_key_here' || apiKey === 'YOUR_DEFAULT_API_KEY') {
